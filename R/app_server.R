@@ -20,6 +20,10 @@ app_server <- function(input, output, session) {
 
   ## home
   mod_homeApp_server("homeApp_1")
+
+  ## test
+  mod_demobert_server("demobert_1", data=data)
+
   ## qa tabs
   mod_qaRawApp_server("qaRawApp_1", data = data)
   mod_expDesignEditApp_server("expDesignEditApp_1", data = data )
