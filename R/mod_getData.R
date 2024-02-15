@@ -197,8 +197,25 @@ mod_getData_ui <- function(id){
             label   = 'Genotypic SNPs Source*:',
             choices = list('HapMap Upload' = 'file', 'HapMap URL' = 'url',
                            'Table Upload' = 'matfile', 'Table URL' = 'matfileurl',
-                           'VCF Upload' = 'vcf.file', 'VCF URL' = 'vcf.url'),
+                           'VCF Upload' = 'vcf.file', 'VCF URL' = 'vcf.url',
+                           'DarTag Upload' = 'dartag.file','DarTag URL' = 'dartag.url'),
             width   = '200px'
+          ),
+          tags$span(id = ns('geno_file_holder'),
+                    fileInput(
+                      inputId = ns('geno_file'),
+                      label   = NULL,
+                      width   = '400px',
+                      accept  = c('application/gzip', '.gz', '.txt', '.hmp', '.csv', '.vcf')
+                    )
+          ),
+          tags$span(id = ns('geno_file_holder'),
+                    fileInput(
+                      inputId = ns('geno_file'),
+                      label   = NULL,
+                      width   = '400px',
+                      accept  = c('application/gzip', '.gz', '.txt', '.hmp', '.csv', '.vcf')
+                    )
           ),
           tags$span(id = ns('geno_file_holder'),
                     fileInput(
@@ -966,13 +983,13 @@ mod_getData_server <- function(id, map = NULL, data = NULL, res_auth=NULL){
     observeEvent(
       input$geno_input,
       if(length(input$geno_input) > 0){ # added
-        if (input$geno_input %in% c('file', 'vcf.file')) {
+        if (input$geno_input %in% c('file', 'vcf.file', 'dartag.file')) {
           golem::invoke_js('showid', ns('geno_file_holder'))
           golem::invoke_js('hideid', ns('geno_url'))
           golem::invoke_js('hideid', ns('geno_table_mapping'))
           golem::invoke_js('hideid', ns('geno_table_options'))
           updateCheckboxInput(session, 'geno_example', value = FALSE)
-        } else if (input$geno_input %in% c('url', 'vcf.url')) {
+        } else if (input$geno_input %in% c('url', 'vcf.url', 'dartag.url')) {
           golem::invoke_js('hideid', ns('geno_file_holder'))
           golem::invoke_js('hideid', ns('geno_table_mapping'))
           golem::invoke_js('hideid', ns('geno_table_options'))
@@ -1060,11 +1077,11 @@ mod_getData_server <- function(id, map = NULL, data = NULL, res_auth=NULL){
 
     geno_data <- reactive({
       if(length(input$geno_input) > 0){ # added
-        if (input$geno_input %in% c('file', 'vcf.file')) {
+        if (input$geno_input %in% c('file', 'vcf.file', 'dartag.file')) {
           if (is.null(input$geno_file)) {return(NULL)}else{
             snps_file <- input$geno_file$datapath
           }
-        } else if (input$geno_input %in% c('url', 'vcf.url')) {
+        } else if (input$geno_input %in% c('url', 'vcf.url', 'dartag.url')) {
           if (input$geno_url == '') {return(NULL)}else{
             snps_file <- input$geno_url
           }
